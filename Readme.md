@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [ALEKSANDR NIKULIN](https://up.htmlacademy.ru/javascript/14/user/490951).
-* Наставник: `Неизвестно`.
+* Наставник: [ВЛАДИМИР КАШАПОВ](https://up.htmlacademy.ru/javascript/14/user/214503).
 
 ---
 
