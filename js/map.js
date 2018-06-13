@@ -5,6 +5,19 @@ var TYPE_HOUSING = ['palace', 'flat', 'house', 'bungalo'];
 var TIME_IN_OUT = ['12:00', '13:00', '14:00'];
 var FACILITIES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var COUNT_POINTS = 8;
+var POINT_WIDTH = 50;
+var POINT_HEIGHT = 70;
+var MAX_WIDTH = 900;
+var MIN_WIDTH = 300;
+var MAX_HEIGHT = 630;
+var MIN_HEIGHT = 130;
+var PRICE_MAX = 1000000;
+var PRICE_MIN = 1000;
+var ROOMS_MAX = 5;
+var ROOMS_MIN = 1;
+var GUESTS_MAX = 10;
+var GUESTS_MIN = 5;
 
 var similarMapPinTemplate = document.querySelector('template')
     .content
@@ -14,8 +27,8 @@ var similarMapPinsElement = document.querySelector('.map__pins');
 
 var calculationCoordinates = function () {
   return {
-    'x': Math.floor(Math.random() * (900 - 300) + 300),
-    'y': Math.floor(Math.random() * (630 - 130) + 130)
+    'x': Math.floor(Math.random() * (MAX_WIDTH - MIN_WIDTH) + MIN_WIDTH),
+    'y': Math.floor(Math.random() * (MAX_HEIGHT - MIN_HEIGHT) + MIN_HEIGHT)
   };
 };
 
@@ -44,7 +57,7 @@ var randomStrGenerator = function (arrStr) {
 
 var randomDataGenerator = function () {
   var ads = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < COUNT_POINTS; i++) {
     var ad =
       {
         'author': {
@@ -54,10 +67,10 @@ var randomDataGenerator = function () {
           'title': NAME_HOUSING[i],
           // 'address': location.x + ', ' + location.y,
           'address': calculationCoordinates().x + ', ' + calculationCoordinates().y,
-          'price': Math.floor(Math.random() * (1000000 - 1000) + 1000),
+          'price': Math.floor(Math.random() * (PRICE_MAX - PRICE_MIN) + PRICE_MIN),
           'type': TYPE_HOUSING[Math.floor(Math.random() * TYPE_HOUSING.length)],
-          'rooms': Math.floor(Math.random() * (5 - 1) + 1),
-          'guests': Math.floor(Math.random() * (10 - 5) + 5),
+          'rooms': Math.floor(Math.random() * (ROOMS_MAX - ROOMS_MIN) + ROOMS_MIN),
+          'guests': Math.floor(Math.random() * (GUESTS_MAX - GUESTS_MIN) + GUESTS_MIN),
           'checkin': TIME_IN_OUT[Math.floor(Math.random() * TIME_IN_OUT.length)],
           'checkiout': TIME_IN_OUT[Math.floor(Math.random() * TIME_IN_OUT.length)],
           'features': randomStrGenerator(FACILITIES),
@@ -77,8 +90,8 @@ var randomDataGenerator = function () {
 
 var renderMapPoint = function (point) {
   var pointElement = similarMapPinTemplate.cloneNode(true);
-  pointElement.style.left = point.location.x - 50 / 2 + 'px'; // Учитываем ширину метки
-  pointElement.style.top = point.location.y - 70 + 'px'; // Учитываем высоту метки
+  pointElement.style.left = point.location.x - POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
+  pointElement.style.top = point.location.y - POINT_HEIGHT + 'px'; // Учитываем высоту метки
   var imgElement = pointElement.querySelector('img');
   imgElement.src = point.author.avatar;
   imgElement.alt = point.offer.title;
