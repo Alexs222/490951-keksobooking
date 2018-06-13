@@ -12,6 +12,13 @@ var similarMapPinTemplate = document.querySelector('template')
 
 var similarMapPinsElement = document.querySelector('.map__pins');
 
+var locationCoordinates = function () {
+  return {
+    'x': Math.floor(Math.random() * (900 - 300) + 300),
+    'y': Math.floor(Math.random() * (630 - 130) + 130)
+  };
+};
+
 var randomStrGenerator = function (arrStr) {
   var stringTotal = [];
   var strLength = Math.floor(Math.random() * (arrStr.length - 1) + 1);
@@ -45,7 +52,8 @@ var randomDataGenerator = function () {
         },
         'offer': {
           'title': NAME_HOUSING[i],
-          'address': location.x + ', ' + location.y,
+          // 'address': location.x + ', ' + location.y,
+          'address': locationCoordinates().x + ', ' + locationCoordinates().y,
           'price': Math.floor(Math.random() * (1000000 - 1000) + 1000),
           'type': TYPE_HOUSING[Math.floor(Math.random() * TYPE_HOUSING.length)],
           'rooms': Math.floor(Math.random() * (5 - 1) + 1),
@@ -57,8 +65,8 @@ var randomDataGenerator = function () {
           'photos': PHOTOS
         },
         'location': {
-          'x': Math.floor(Math.random() * (900 - 300) + 300),
-          'y': Math.floor(Math.random() * (630 - 130) + 130)
+          'x': locationCoordinates().x,
+          'y': locationCoordinates().y
         }
       };
 
