@@ -58,6 +58,7 @@ var randomStrGenerator = function (arrStr) {
 var randomDataGenerator = function () {
   var ads = [];
   for (var i = 0; i < COUNT_POINTS; i++) {
+    var coords = calculationCoordinates();
     var ad =
       {
         'author': {
@@ -66,7 +67,7 @@ var randomDataGenerator = function () {
         'offer': {
           'title': NAME_HOUSING[i],
           // 'address': location.x + ', ' + location.y,
-          'address': calculationCoordinates().x + ', ' + calculationCoordinates().y,
+          'address': coords.x + ', ' + coords.y,
           'price': Math.floor(Math.random() * (PRICE_MAX - PRICE_MIN) + PRICE_MIN),
           'type': TYPE_HOUSING[Math.floor(Math.random() * TYPE_HOUSING.length)],
           'rooms': Math.floor(Math.random() * (ROOMS_MAX - ROOMS_MIN) + ROOMS_MIN),
@@ -78,8 +79,8 @@ var randomDataGenerator = function () {
           'photos': PHOTOS
         },
         'location': {
-          'x': calculationCoordinates().x,
-          'y': calculationCoordinates().y
+          'x': coords.x,
+          'y': coords.y
         }
       };
 
