@@ -198,8 +198,6 @@ var renderMapCard = function (card) {
   return cardElement;
 };
 
-// mapElement.insertBefore(renderMapCard(oneElementData), mapFiltersContainerElement);
-
 // Делаем поля не активными
 var fieldsetElements = document.querySelectorAll('fieldset');
 var disabledElementFormArr = Array.from(fieldsetElements);
@@ -226,10 +224,44 @@ var buttonActivationMouseupHandler = function () {
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
   similarMapPinsElement.appendChild(createBlock(adsData));
+
+  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+  for (var k = 0; k < mapPinElements.length; k++) {
+    mapPinElements[k].addEventListener('click', buttonClickMapPinsHandler);
+  }
+
+  buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
+
 };
 
+// Функция обработчик события click на элементе map__pin
+var buttonClickMapPinsHandler = function (evt) {
+  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // надо разобраться
+
+  var openCard = function () {
+    for (var j = 0; j < mapPinElements.length; j++) {
+      if (mapPinElements[j].style.left === evt.currentTarget.style.left && mapPinElements[j].style.top === evt.currentTarget.style.top) {
+        cardElement = mapElement.insertBefore(renderMapCard(adsData[j]), mapFiltersContainerElement);
+      }
+    }
+  };
+
+  var cardElement = document.querySelector('.map__card');
+  if (!cardElement) {
+    openCard();
+  } else {
+    cardElement.remove();
+    openCard();
+  }
+
+  // Закрытие карточк
+  var closeElement = document.querySelector('.popup__close');
+  closeElement.addEventListener('click', function () {
+    cardElement.remove();
+  });
+
+};
 
 buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
 
-// var
-// for (i = 0; i < )
