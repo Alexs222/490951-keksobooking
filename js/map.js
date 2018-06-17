@@ -6,6 +6,8 @@ var TIME_IN_OUT = ['12:00', '13:00', '14:00'];
 var FACILITIES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var COUNT_POINTS = 8;
+var MAP_PIN_WIDTH = 50;
+var MAP_PIN_HEIGHT = 70;
 var POINT_WIDTH = 50;
 var POINT_HEIGHT = 70;
 var MAX_WIDTH = 900;
@@ -43,17 +45,6 @@ var randomStrGenerator = function (arrStr) {
   }
   return stringTotal;
 };
-
-// var randomOrderGenerator = function (arrOrder) {
-//   var orderArr = [];
-//   while (orderArr.length < arrOrder.length) {
-//     var order = arrOrder[Math.floor(Math.random() * arrOrder.length)];
-//     if (!(orderArr.includes(order))) {
-//       orderArr.push(order);
-//     }
-//   }
-//   return orderArr;
-// };
 
 var randomDataGenerator = function () {
   var ads = [];
@@ -109,10 +100,10 @@ var createBlock = function (points) {
 };
 
 var adsData = randomDataGenerator();
-similarMapPinsElement.appendChild(createBlock(adsData));
+// similarMapPinsElement.appendChild(createBlock(adsData));
 
 // Создаем объявление
-var oneElementData = adsData[0];
+// var oneElementData = adsData[0];
 
 var similarMapCardTemplate = document.querySelector('template')
     .content
@@ -207,4 +198,70 @@ var renderMapCard = function (card) {
   return cardElement;
 };
 
-mapElement.insertBefore(renderMapCard(oneElementData), mapFiltersContainerElement);
+// Делаем поля не активными
+var fieldsetElements = document.querySelectorAll('fieldset');
+var disabledElementFormArr = Array.from(fieldsetElements);
+for (var i = 0; i < disabledElementFormArr.length; i++) {
+  disabledElementFormArr[i].setAttribute('disabled', 'disabled');
+}
+
+// Активация страницы
+var buttonActivation = document.querySelector('.map__pin--main');
+
+var coordMapPin = {
+  'x': buttonActivation.style.left,
+  'y': buttonActivation.style.top
+};
+var formAd = document.querySelector('.ad-form');
+var inputAddress = document.querySelector('#address');
+
+// Функция обработчик события mouseup на элементе map__pin--main
+var buttonActivationMouseupHandler = function () {
+  mapElement.classList.remove('map--faded');
+  formAd.classList.remove('.ad-form--disabled');
+  for (var j = 0; j < disabledElementFormArr.length; j++) {
+    disabledElementFormArr[j].removeAttribute('disabled');
+  }
+  inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
+  similarMapPinsElement.appendChild(createBlock(adsData));
+
+  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+  for (var k = 0; k < mapPinElements.length; k++) {
+    mapPinElements[k].addEventListener('click', buttonClickMapPinsHandler);
+  }
+
+  buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
+
+};
+
+// Функция обработчик события click на элементе map__pin
+var buttonClickMapPinsHandler = function (evt) {
+  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // надо разобраться
+
+  var openCard = function () {
+    for (var j = 0; j < mapPinElements.length; j++) {
+      if (mapPinElements[j].style.left === evt.currentTarget.style.left && mapPinElements[j].style.top === evt.currentTarget.style.top) {
+        cardElement = mapElement.insertBefore(renderMapCard(adsData[j]), mapFiltersContainerElement);
+      }
+    }
+  };
+
+  var cardElement = document.querySelector('.map__card');
+  if (!cardElement) {
+    openCard();
+  } else {
+    cardElement.remove();
+    openCard();
+  }
+
+  // Закрытие карточк
+  var closeElement = document.querySelector('.popup__close');
+  closeElement.addEventListener('click', function () {
+    cardElement.remove();
+  });
+
+};
+
+buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+
