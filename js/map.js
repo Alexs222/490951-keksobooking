@@ -103,7 +103,7 @@ var adsData = randomDataGenerator();
 // similarMapPinsElement.appendChild(createBlock(adsData));
 
 // Создаем объявление
-var oneElementData = adsData[0];
+// var oneElementData = adsData[0];
 
 var similarMapCardTemplate = document.querySelector('template')
     .content
