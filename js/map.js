@@ -21,6 +21,7 @@ var ROOMS_MIN = 1;
 var GUESTS_MAX = 10;
 var GUESTS_MIN = 5;
 
+var body = document.querySelector('body');
 var similarMapPinTemplate = document.querySelector('template')
     .content
     .querySelector('.map__pin');
@@ -386,10 +387,7 @@ buttonActivation.addEventListener('mousedown', function (evt) {
       y: moveEvt.clientY
     };
 
-    console.log(startCoords);
-
     inputAddress.value = (buttonActivation.offsetLeft - shift.x + MAP_PIN_WIDTH / 2) + ', ' + (buttonActivation.offsetTop - shift.y + MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-    console.log(inputAddress.value);
 
     if (buttonActivation.offsetTop - shift.y < 130) {
       buttonActivation.style.top = 130;
@@ -399,10 +397,6 @@ buttonActivation.addEventListener('mousedown', function (evt) {
       buttonActivation.style.top = (buttonActivation.offsetTop - shift.y) + 'px';
     }
 
-    var body = document.querySelector('body');
-    console.log(body.offsetWidth);
-
-
     if (buttonActivation.offsetLeft - shift.x < 0) {
       buttonActivation.style.left = 0;
     } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH) {
@@ -410,8 +404,6 @@ buttonActivation.addEventListener('mousedown', function (evt) {
     } else {
       buttonActivation.style.left = (buttonActivation.offsetLeft - shift.x) + 'px';
     }
-
-
   };
 
   var onMouseUp = function (upEvt) {
