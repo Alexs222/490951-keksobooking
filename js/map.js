@@ -82,8 +82,8 @@ var randomDataGenerator = function () {
 
 var renderMapPoint = function (point) {
   var pointElement = similarMapPinTemplate.cloneNode(true);
-  pointElement.style.left = point.location.x - POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
-  pointElement.style.top = point.location.y - POINT_HEIGHT + 'px'; // Учитываем высоту метки
+  pointElement.style.left = point.location.x + POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
+  pointElement.style.top = point.location.y + POINT_HEIGHT + 'px'; // Учитываем высоту метки
   var imgElement = pointElement.querySelector('img');
   imgElement.src = point.author.avatar;
   imgElement.alt = point.offer.title;
@@ -360,3 +360,76 @@ var selectChangeRoomAndCaoacityHendler = function (evt) {
 };
 
 roomNumberSelect.addEventListener('change', selectChangeRoomAndCaoacityHendler);
+
+// Перетаскивание метки
+buttonActivation.addEventListener('mousedown', function (evt) {
+
+  evt.preventDefault();
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var dragged = false;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    console.log(startCoords);
+
+    inputAddress.value = (buttonActivation.offsetLeft - shift.x + MAP_PIN_WIDTH / 2) + ', ' + (buttonActivation.offsetTop - shift.y + MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
+    console.log(inputAddress.value);
+
+    if (buttonActivation.offsetTop - shift.y < 130) {
+      buttonActivation.style.top = 130;
+    } else if (buttonActivation.offsetTop - shift.y > 630) {
+      buttonActivation.style.top = 630;
+    } else {
+      buttonActivation.style.top = (buttonActivation.offsetTop - shift.y) + 'px';
+    }
+
+    var body = document.querySelector('body');
+    console.log(body.offsetWidth);
+
+
+    if (buttonActivation.offsetLeft - shift.x < 0) {
+      buttonActivation.style.left = 0;
+    } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH) {
+      buttonActivation.style.left = body.offsetWidth - MAP_PIN_WIDTH;
+    } else {
+      buttonActivation.style.left = (buttonActivation.offsetLeft - shift.x) + 'px';
+    }
+
+
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (dragged) {
+      var onClickPreventDefault = function (evtDragged) {
+        evtDragged.preventDefault();
+        buttonActivation.removeEventListener('click', onClickPreventDefault);
+      };
+      buttonActivation.addEventListener('click', onClickPreventDefault);
+    }
+
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+});
