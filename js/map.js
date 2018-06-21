@@ -362,6 +362,48 @@ var selectChangeRoomAndCaoacityHendler = function (evt) {
 
 roomNumberSelect.addEventListener('change', selectChangeRoomAndCaoacityHendler);
 
+// Получение ширины прокрутки
+function getScrollbarWidth() {
+
+  var div = document.createElement('div'); // Первый вариант
+
+  div.style.overflowY = 'scroll';
+  div.style.width = '50px';
+  div.style.height = '50px';
+
+  div.style.visibility = 'hidden';
+
+  document.body.appendChild(div);
+  var scrollWidth = div.offsetWidth - div.clientWidth;
+  document.body.removeChild(div);
+
+  return scrollWidth;
+
+  // return body.offsetWidth - body.clientWidth; // Второй вариант
+
+  // var outer = document.createElement('div'); // Третий вариант
+  // outer.style.visibility = '0';
+  // outer.style.width = '100px';
+  // document.body.appendChild(outer);
+
+  // var widthNoScroll = outer.offsetWidth;
+  // // force scrollbars
+  // outer.style.overflow = 'scroll';
+
+  // // add innerdiv
+  // var inner = document.createElement('div');
+  // inner.style.width = '100%';
+  // outer.appendChild(inner);
+  // var widthWithScroll = inner.offsetWidth;
+
+  // // remove divs
+  // outer.parentNode.removeChild(outer);
+  // return widthNoScroll - widthWithScroll;
+}
+
+// console.log('Scrollbar width is: ' + getScrollbarWidth());
+
+
 // Перетаскивание метки
 buttonActivation.addEventListener('mousedown', function (evt) {
 
@@ -399,7 +441,7 @@ buttonActivation.addEventListener('mousedown', function (evt) {
 
     if (buttonActivation.offsetLeft - shift.x < 0) {
       buttonActivation.style.left = 0;
-    } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH) {
+    } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH - 16) {
       buttonActivation.style.left = body.offsetWidth - MAP_PIN_WIDTH;
     } else {
       buttonActivation.style.left = (buttonActivation.offsetLeft - shift.x) + 'px';
@@ -419,8 +461,14 @@ buttonActivation.addEventListener('mousedown', function (evt) {
       buttonActivation.addEventListener('click', onClickPreventDefault);
     }
 
+    // if (mapElement.classList === 'map--faded') {
+    //   var onMouseMovePreventDefault = function (evtUp) {
+    //     evtUp.preventDefault();
+    //     buttonActivation.removeEventListener('mousemove', onMouseMovePreventDefault);
+    //   };
+    //   buttonActivation.addEventListener('mousemove', onMouseMovePreventDefault);
+    // }
   };
-
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 
