@@ -363,43 +363,43 @@ var selectChangeRoomAndCaoacityHendler = function (evt) {
 roomNumberSelect.addEventListener('change', selectChangeRoomAndCaoacityHendler);
 
 // Получение ширины прокрутки
-function getScrollbarWidth() {
+// function getScrollbarWidth() {
 
-  var div = document.createElement('div'); // Первый вариант
+//   var div = document.createElement('div'); // Первый вариант
 
-  div.style.overflowY = 'scroll';
-  div.style.width = '50px';
-  div.style.height = '50px';
+//   div.style.overflowY = 'scroll';
+//   div.style.width = '50px';
+//   div.style.height = '50px';
 
-  div.style.visibility = 'hidden';
+//   div.style.visibility = 'hidden';
 
-  document.body.appendChild(div);
-  var scrollWidth = div.offsetWidth - div.clientWidth;
-  document.body.removeChild(div);
+//   document.body.appendChild(div);
+//   var scrollWidth = div.offsetWidth - div.clientWidth;
+//   document.body.removeChild(div);
 
-  return scrollWidth;
+//   return scrollWidth;
 
-  // return body.offsetWidth - body.clientWidth; // Второй вариант
+//   // return body.offsetWidth - body.clientWidth; // Второй вариант
 
-  // var outer = document.createElement('div'); // Третий вариант
-  // outer.style.visibility = '0';
-  // outer.style.width = '100px';
-  // document.body.appendChild(outer);
+//   // var outer = document.createElement('div'); // Третий вариант
+//   // outer.style.visibility = '0';
+//   // outer.style.width = '100px';
+//   // document.body.appendChild(outer);
 
-  // var widthNoScroll = outer.offsetWidth;
-  // // force scrollbars
-  // outer.style.overflow = 'scroll';
+//   // var widthNoScroll = outer.offsetWidth;
+//   // // force scrollbars
+//   // outer.style.overflow = 'scroll';
 
-  // // add innerdiv
-  // var inner = document.createElement('div');
-  // inner.style.width = '100%';
-  // outer.appendChild(inner);
-  // var widthWithScroll = inner.offsetWidth;
+//   // // add innerdiv
+//   // var inner = document.createElement('div');
+//   // inner.style.width = '100%';
+//   // outer.appendChild(inner);
+//   // var widthWithScroll = inner.offsetWidth;
 
-  // // remove divs
-  // outer.parentNode.removeChild(outer);
-  // return widthNoScroll - widthWithScroll;
-}
+//   // // remove divs
+//   // outer.parentNode.removeChild(outer);
+//   // return widthNoScroll - widthWithScroll;
+// }
 
 // console.log('Scrollbar width is: ' + getScrollbarWidth());
 
@@ -469,7 +469,7 @@ buttonActivation.addEventListener('mousedown', function (evt) {
     //   buttonActivation.addEventListener('mousemove', onMouseMovePreventDefault);
     // }
   };
+
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
 });
