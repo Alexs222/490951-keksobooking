@@ -363,46 +363,30 @@ var selectChangeRoomAndCaoacityHendler = function (evt) {
 roomNumberSelect.addEventListener('change', selectChangeRoomAndCaoacityHendler);
 
 // Получение ширины прокрутки
-// function getScrollbarWidth() {
+function getScrollbarWidth() {
 
-//   var div = document.createElement('div'); // Первый вариант
+  var div = document.createElement('div');
 
-//   div.style.overflowY = 'scroll';
-//   div.style.width = '50px';
-//   div.style.height = '50px';
+  div.style.overflowY = 'scroll';
+  div.style.width = '50px';
+  div.style.height = '50px';
 
-//   div.style.visibility = 'hidden';
+  div.style.visibility = 'hidden';
 
-//   document.body.appendChild(div);
-//   var scrollWidth = div.offsetWidth - div.clientWidth;
-//   document.body.removeChild(div);
+  document.body.appendChild(div);
+  var scrollWidth = div.offsetWidth - div.clientWidth;
+  document.body.removeChild(div);
 
-//   return scrollWidth;
+  return scrollWidth;
 
-//   // return body.offsetWidth - body.clientWidth; // Второй вариант
+}
 
-//   // var outer = document.createElement('div'); // Третий вариант
-//   // outer.style.visibility = '0';
-//   // outer.style.width = '100px';
-//   // document.body.appendChild(outer);
-
-//   // var widthNoScroll = outer.offsetWidth;
-//   // // force scrollbars
-//   // outer.style.overflow = 'scroll';
-
-//   // // add innerdiv
-//   // var inner = document.createElement('div');
-//   // inner.style.width = '100%';
-//   // outer.appendChild(inner);
-//   // var widthWithScroll = inner.offsetWidth;
-
-//   // // remove divs
-//   // outer.parentNode.removeChild(outer);
-//   // return widthNoScroll - widthWithScroll;
-// }
-
-// console.log('Scrollbar width is: ' + getScrollbarWidth());
-
+// Расчет ширины метки
+var mapWidth = function () {
+  var mapPinElement = document.querySelector('.map__pin--main img');
+  var mapPinComputed = getComputedStyle(mapPinElement);
+  return parseInt(mapPinComputed.borderLeftWidth, 10) + parseInt(mapPinComputed.paddingLeft, 10) + parseInt(mapPinComputed.marginLeft, 10);
+};
 
 // Перетаскивание метки
 buttonActivation.addEventListener('mousedown', function (evt) {
@@ -431,6 +415,10 @@ buttonActivation.addEventListener('mousedown', function (evt) {
 
     inputAddress.value = (buttonActivation.offsetLeft - shift.x + MAP_PIN_WIDTH / 2) + ', ' + (buttonActivation.offsetTop - shift.y + MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
 
+    // var maxX = body.offsetWidth - MAP_PIN_WIDTH;
+    // var deltaX = buttonActivation.offsetLeft - shift.x;
+    // console.log(maxX, deltaX);
+
     if (buttonActivation.offsetTop - shift.y < 130) {
       buttonActivation.style.top = 130;
     } else if (buttonActivation.offsetTop - shift.y > 630) {
@@ -441,8 +429,8 @@ buttonActivation.addEventListener('mousedown', function (evt) {
 
     if (buttonActivation.offsetLeft - shift.x < 0) {
       buttonActivation.style.left = 0;
-    } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH - 16) {
-      buttonActivation.style.left = body.offsetWidth - MAP_PIN_WIDTH;
+    } else if (buttonActivation.offsetLeft - shift.x > body.offsetWidth - MAP_PIN_WIDTH - getScrollbarWidth() - mapWidth()) {
+      buttonActivation.style.left = body.offsetWidth - MAP_PIN_WIDTH - getScrollbarWidth() - mapWidth();
     } else {
       buttonActivation.style.left = (buttonActivation.offsetLeft - shift.x) + 'px';
     }
@@ -460,14 +448,6 @@ buttonActivation.addEventListener('mousedown', function (evt) {
       };
       buttonActivation.addEventListener('click', onClickPreventDefault);
     }
-
-    // if (mapElement.classList === 'map--faded') {
-    //   var onMouseMovePreventDefault = function (evtUp) {
-    //     evtUp.preventDefault();
-    //     buttonActivation.removeEventListener('mousemove', onMouseMovePreventDefault);
-    //   };
-    //   buttonActivation.addEventListener('mousemove', onMouseMovePreventDefault);
-    // }
   };
 
   document.addEventListener('mousemove', onMouseMove);
