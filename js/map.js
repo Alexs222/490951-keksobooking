@@ -3,27 +3,27 @@
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
 
-var renderMapPoint = function (point) {
-  var similarMapPinTemplate = document.querySelector('template')
-  .content
-  .querySelector('.map__pin');
-  var pointElement = similarMapPinTemplate.cloneNode(true);
-  pointElement.style.left = point.location.x - window.commonConst.POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
-  pointElement.style.top = point.location.y - window.commonConst.POINT_HEIGHT + 'px'; // Учитываем высоту метки
-  var imgElement = pointElement.querySelector('img');
-  imgElement.src = point.author.avatar;
-  imgElement.alt = point.offer.title;
-  return pointElement;
-};
+// var renderMapPoint = function (point) {
+//   var similarMapPinTemplate = document.querySelector('template')
+//   .content
+//   .querySelector('.map__pin');
+//   var pointElement = similarMapPinTemplate.cloneNode(true);
+//   pointElement.style.left = point.location.x - window.commonConst.POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
+//   pointElement.style.top = point.location.y - window.commonConst.POINT_HEIGHT + 'px'; // Учитываем высоту метки
+//   var imgElement = pointElement.querySelector('img');
+//   imgElement.src = point.author.avatar;
+//   imgElement.alt = point.offer.title;
+//   return pointElement;
+// };
 
-var createBlock = function (points) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < points.length; i++) {
-    var element = points[i];
-    fragment.appendChild(renderMapPoint(element));
-  }
-  return fragment;
-};
+// var createBlock = function (points) {
+//   var fragment = document.createDocumentFragment();
+//   for (var i = 0; i < points.length; i++) {
+//     var element = points[i];
+//     fragment.appendChild(renderMapPoint(element));
+//   }
+//   return fragment;
+// };
 
 var mapElement = document.querySelector('.map');
 
@@ -53,7 +53,7 @@ var buttonActivationMouseupHandler = function () {
     disabledElementFormArr[j].removeAttribute('disabled');
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-  similarMapPinsElement.appendChild(createBlock(window.data));
+  similarMapPinsElement.appendChild(window.createBlock(window.data));
 
   var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 

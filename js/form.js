@@ -2,8 +2,12 @@
 
 (function () {
   // Форма
+  var priceMinBungalo = 0;
+  var priceMinFlat = 1000;
+  var priceMinHouse = 5000;
+  var priceMinPalace = 10000;
 
-// Заголовок объявления
+  // Заголовок объявления
   var notice = document.querySelector('.notice');
   var titleInput = notice.querySelector('#title');
   titleInput.addEventListener('invalid', function () {
@@ -24,20 +28,20 @@
   var selectChangeTypeHendler = function () {
     switch (selectTypeHouse.value) {
       case 'bungalo':
-        priceHouse.placeholder = '0';
-        priceHouse.min = 0;
+        priceHouse.placeholder = priceMinBungalo + '';
+        priceHouse.min = priceMinBungalo;
         break;
       case 'flat':
-        priceHouse.placeholder = '1000';
-        priceHouse.min = 1000;
+        priceHouse.placeholder = priceMinFlat + '';
+        priceHouse.min = priceMinFlat;
         break;
       case 'house':
-        priceHouse.placeholder = '5000';
-        priceHouse.min = 5000;
+        priceHouse.placeholder = priceMinHouse + '';
+        priceHouse.min = priceMinHouse;
         break;
       case 'palace':
-        priceHouse.placeholder = '10000';
-        priceHouse.min = 10000;
+        priceHouse.placeholder = priceMinPalace + '';
+        priceHouse.min = priceMinPalace;
         break;
       default:
         break;
