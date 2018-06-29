@@ -35,7 +35,7 @@
     guestsRoomsCard.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
 
     var timeInOutCard = cardElement.querySelector('.popup__text--time');
-    timeInOutCard.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkiout;
+    timeInOutCard.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkin;
 
     var featuresListCard = cardElement.querySelector('.popup__features');
     var featureItemWiFi = featuresListCard.querySelector('.popup__feature--wifi');
