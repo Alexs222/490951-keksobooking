@@ -3,28 +3,6 @@
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
 
-// var renderMapPoint = function (point) {
-//   var similarMapPinTemplate = document.querySelector('template')
-//   .content
-//   .querySelector('.map__pin');
-//   var pointElement = similarMapPinTemplate.cloneNode(true);
-//   pointElement.style.left = point.location.x - window.commonConst.POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
-//   pointElement.style.top = point.location.y - window.commonConst.POINT_HEIGHT + 'px'; // Учитываем высоту метки
-//   var imgElement = pointElement.querySelector('img');
-//   imgElement.src = point.author.avatar;
-//   imgElement.alt = point.offer.title;
-//   return pointElement;
-// };
-
-// var createBlock = function (points) {
-//   var fragment = document.createDocumentFragment();
-//   for (var i = 0; i < points.length; i++) {
-//     var element = points[i];
-//     fragment.appendChild(renderMapPoint(element));
-//   }
-//   return fragment;
-// };
-
 var mapElement = document.querySelector('.map');
 
 // Делаем поля не активными
@@ -44,6 +22,24 @@ var coordMapPin = {
 var formAd = document.querySelector('.ad-form');
 var inputAddress = document.querySelector('#address');
 
+// Событие отправки формы на сервер
+formAd.addEventListener('submit', function (evt) {
+  window.ajax.upload(new FormData(formAd), function () {
+    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // уже было в файле create-block.js
+    for (var k = 0; k < mapPinElements.length; k++) {
+      mapPinElements[k].remove();
+    }
+    mapElement.classList.add('map--faded');
+    formAd.classList.add('ad-form--disabled');
+    for (var j = 0; j < disabledElementFormArr.length; j++) {
+      disabledElementFormArr[j].setAttribute('disabled', 'disabled');
+    }
+    buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+    formAd.reset();
+  });
+  evt.preventDefault();
+});
+
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {
   var similarMapPinsElement = document.querySelector('.map__pins');
@@ -53,45 +49,28 @@ var buttonActivationMouseupHandler = function () {
     disabledElementFormArr[j].removeAttribute('disabled');
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-  similarMapPinsElement.appendChild(window.createBlock(window.data));
 
-  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-  for (var k = 0; k < mapPinElements.length; k++) {
-    mapPinElements[k].addEventListener('click', buttonClickMapPinsHandler);
-  }
-
-  buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
-
-};
-
-// Функция обработчик события click на элементе map__pin
-var buttonClickMapPinsHandler = function (evt) {
-  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-  var openCard = function () {
-    var mapFiltersContainerElement = document.querySelector('.map__filters-container');
-    for (var j = 0; j < mapPinElements.length; j++) {
-      if (mapPinElements[j].style.left === evt.currentTarget.style.left && mapPinElements[j].style.top === evt.currentTarget.style.top) {
-        cardElement = mapElement.insertBefore(window.renderMapCard(window.data[j]), mapFiltersContainerElement);
-      }
+  var onSuccess = function (points) {
+    var fragment = document.createDocumentFragment();
+    for (var k = 0; k < points.length; k++) {
+      var element = points[k];
+      fragment.appendChild(window.renderMapPoint(element));
     }
+    similarMapPinsElement.appendChild(fragment);
   };
+  var onError = function (errorMessage) {
+    var nodeErr = document.createElement('div');
+    nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    nodeErr.style.position = 'absolute';
+    nodeErr.style.left = 0;
+    nodeErr.style.right = 0;
+    nodeErr.style.fontSize = '30px';
 
-  var cardElement = document.querySelector('.map__card');
-  if (!cardElement) {
-    openCard();
-  } else {
-    cardElement.remove();
-    openCard();
-  }
-
-  // Закрытие карточк
-  var closeElement = document.querySelector('.popup__close');
-  closeElement.addEventListener('click', function () {
-    cardElement.remove();
-  });
-
+    nodeErr.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', nodeErr);
+  };
+  window.ajax.load(onSuccess, onError);
+  buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
 };
 
 buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
