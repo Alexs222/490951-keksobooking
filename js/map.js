@@ -25,11 +25,17 @@ var inputAddress = document.querySelector('#address');
 // Событие отправки формы на сервер
 formAd.addEventListener('submit', function (evt) {
   window.ajax.upload(new FormData(formAd), function () {
+    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // уже было в файле create-block.js
+    for (var k = 0; k < mapPinElements.length; k++) {
+      mapPinElements[k].remove();
+    }
     mapElement.classList.add('map--faded');
     formAd.classList.add('ad-form--disabled');
     for (var j = 0; j < disabledElementFormArr.length; j++) {
       disabledElementFormArr[j].setAttribute('disabled', 'disabled');
     }
+    buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+    formAd.reset();
   });
   evt.preventDefault();
 });
