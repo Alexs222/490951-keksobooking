@@ -44,6 +44,11 @@
         closeElement.addEventListener('click', function () {
           cardElement.remove();
         });
+        document.addEventListener('keydown', function (e) {
+          if (e.keyCode === 27) {
+            cardElement.remove();
+          }
+        });
       }
     };
     setTimeout(closeCard, 500);
@@ -59,6 +64,11 @@
     pointElement.style.top = point.location.y - window.commonConst.POINT_HEIGHT + 'px'; // Учитываем высоту метки
 
     pointElement.addEventListener('click', buttonClickMapPinsHandler);
+    pointElement.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 13) {
+        buttonClickMapPinsHandler(evt);
+      }
+    });
 
     var imgElement = pointElement.querySelector('img');
     imgElement.src = point.author.avatar;
