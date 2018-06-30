@@ -51,8 +51,6 @@ var buttonActivationMouseupHandler = function () {
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
 
   var onSuccess = function (points) {
-    // var similarMapPinsElement = document.querySelector('.map__pins');
-
     var fragment = document.createDocumentFragment();
     for (var k = 0; k < points.length; k++) {
       var element = points[k];
@@ -70,71 +68,10 @@ var buttonActivationMouseupHandler = function () {
 
     nodeErr.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', nodeErr);
-    // console.log(errorMessage);
   };
   window.ajax.load(onSuccess, onError);
-  // window.onSuccessTest = function (points) {
-  //   console.log(points);
-  //   return points;
-  // };
-  // var onErrorTest = function (errorMessage) {
-  //   console.log(errorMessage);
-  // };
-  // window.load(onSuccessTest, onErrorTest);
-
-  // similarMapPinsElement.appendChild(window.createBlock(window.data));
-
-  // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-  // for (var k = 0; k < mapPinElements.length; k++) {
-  //   mapPinElements[k].addEventListener('click', buttonClickMapPinsHandler);
-  // }
-
   buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
-
 };
-
-// Функция обработчик события click на элементе map__pin
-// var buttonClickMapPinsHandler = function (evt) {
-//   var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-//   //   console.log('событие произошло');
-
-//   var openCard = function () {
-//     // var onLoadArr = function (points) {
-//     //   var mapFiltersContainerElement = document.querySelector('.map__filters-container');
-//     //   for (var j = 0; j < mapPinElements.length; j++) {
-//     //     if (mapPinElements[j].style.left === evt.currentTarget.style.left && mapPinElements[j].style.top === evt.currentTarget.style.top) {
-//     //       cardElement = mapElement.insertBefore(window.renderMapCard(points[j]), mapFiltersContainerElement);
-//     //     }
-//     //   }
-//     // };
-//     // var onLoadError = function (errorMessage) {
-//     //   console.log(errorMessage);
-//     // };
-//     // window.load(onLoadArr, onLoadError);
-
-//     var mapFiltersContainerElement = document.querySelector('.map__filters-container');
-//     for (var j = 0; j < mapPinElements.length; j++) {
-//       if (mapPinElements[j].style.left === evt.currentTarget.style.left && mapPinElements[j].style.top === evt.currentTarget.style.top) {
-//         cardElement = mapElement.insertBefore(window.renderMapCard(window.data[j]), mapFiltersContainerElement);
-//       }
-//     }
-//   };
-
-//   var cardElement = document.querySelector('.map__card');
-//   if (!cardElement) {
-//     openCard();
-//   } else {
-//     cardElement.remove();
-//     openCard();
-//   }
-
-//   // Закрытие карточк
-//   var closeElement = document.querySelector('.popup__close');
-//   closeElement.addEventListener('click', function () {
-//     cardElement.remove();
-//   });
-// };
 
 buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
 

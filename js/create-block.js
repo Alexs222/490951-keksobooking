@@ -23,10 +23,8 @@
         nodeErr.style.left = 0;
         nodeErr.style.right = 0;
         nodeErr.style.fontSize = '30px';
-
         nodeErr.textContent = errorMessage;
         document.body.insertAdjacentElement('afterbegin', nodeErr);
-        // console.log(errorMessage);
       };
       window.ajax.load(onLoadArr, onLoadError);
     };
@@ -53,7 +51,6 @@
 
 
   window.renderMapPoint = function (point) {
-  // var renderMapPoint = function (point) {
     var similarMapPinTemplate = document.querySelector('template')
     .content
     .querySelector('.map__pin');
@@ -68,17 +65,5 @@
     imgElement.alt = point.offer.title;
     return pointElement;
   };
-
-  // window.createBlock = function (points) {
-  //   var fragment = document.createDocumentFragment();
-  //   for (var i = 0; i < points.length; i++) {
-  //     var element = points[i];
-  //     console.log(element);
-  //     fragment.appendChild(renderMapPoint(element));
-
-
-  //   }
-  //   return fragment;
-  // };
 })();
 
