@@ -98,11 +98,11 @@
   };
 
   // Функции обработчики на селектах
-  var typeValue = '';
+  // var typeValue = '';
   var onSelectChangeType = function () {
-    typeValue = tipeElement.options[tipeElement.selectedIndex].value;
-    console.log(typeValue);
-    // return typeValue;
+    var typeValue = tipeElement.options[tipeElement.selectedIndex].value;
+    // console.log(typeValue);
+    return typeValue;
   };
 
   // Фильтрация
@@ -115,7 +115,7 @@
       return pin.offer.type === 'house';
       // return pin;
     });
-    console.log(filteredPins);
+    // console.log(filteredPins);
 
     renderFragment(filteredPins);
   };
@@ -131,7 +131,7 @@
   var dataArrPins = [];
   var onSuccess = function (points) {
     dataArrPins = points;
-    console.log(dataArrPins);
+    // console.log(dataArrPins);
 
     updateMapPins();
   };
