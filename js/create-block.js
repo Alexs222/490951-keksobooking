@@ -27,8 +27,8 @@ window.createBlock = (function () {
   var buttonClickMapPinsHandler = function (evt) {
 
     var mapElement = document.querySelector('.map');
-    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    console.log(mapPinElements);
+    // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    // console.log(mapPinElements);
 
 
     var cardElement = document.querySelector('.map__card');
@@ -88,7 +88,7 @@ window.createBlock = (function () {
         return pin.offer.type === filters.typeHouse;
         // return pin;
       });
-      console.log(filteredPins);
+      // console.log(filteredPins);
 
     } else {
       filteredPins = dataArrPins;
@@ -100,7 +100,7 @@ window.createBlock = (function () {
   // var typeValue = '';
   var onSelectChangeType = function () {
     var typeValue = tipeElement.options[tipeElement.selectedIndex].value;
-    console.log(typeValue);
+    // console.log(typeValue);
     var filters = {
       typeHouse: typeValue,
     };
@@ -117,7 +117,7 @@ window.createBlock = (function () {
   return {
     onSuccess: function (points) {
       dataArrPins = points;
-      console.log(dataArrPins);
+      // console.log(dataArrPins);
       renderFragment(filterPins());
       // updateMapPins();
     },
