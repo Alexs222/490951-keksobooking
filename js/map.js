@@ -49,13 +49,14 @@ var buttonActivationMouseupHandler = function () {
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
   // window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError); // Инициализируем метки
-  var removeHiddenClass = function (elements) {
-    for (var k = 0; k < elements.length; k++) {
-      elements[k].classList.remove('hidden');
-    }
-  };
-  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  removeHiddenClass(mapPinElements);
+  // var removeHiddenClass = function (elements) {
+  //   for (var k = 0; k < elements.length; k++) {
+  //     elements[k].classList.remove('hidden');
+  //   }
+  // };
+  // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  // removeHiddenClass(mapPinElements);
+  window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError);
 
   buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
 };

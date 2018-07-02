@@ -69,6 +69,17 @@
     var avatarCard = cardElement.querySelector('.popup__avatar');
     avatarCard.src = card.author.avatar;
 
+    // Закрываем карточку
+    var closeElement = cardElement.querySelector('.popup__close');
+    closeElement.addEventListener('click', function () {
+      cardElement.remove();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.keyCode === 27) {
+        cardElement.remove();
+      }
+    });
+
     return cardElement;
   };
 
