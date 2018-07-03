@@ -2,7 +2,6 @@
 
 window.createBlock = (function () {
   var dataArrPins = [];
-  // var filteredPins = [];
 
   var openCard = function (evt, mapElement) {
     var left = evt.currentTarget.style.left;
@@ -14,22 +13,15 @@ window.createBlock = (function () {
       var pinLeft = dataArrPins[j].location.x - window.commonConst.POINT_WIDTH / 2 + 'px';
       var pinTop = dataArrPins[j].location.y - window.commonConst.POINT_HEIGHT + 'px';
       if (pinLeft === left && pinTop === top) {
-        // console.log(mapPinElements[j]);
-        // console.log(evtCopi);
-
         mapElement.insertBefore(window.renderMapCard(dataArrPins[j]), mapFiltersContainerElement);
         break;
       }
     }
   };
 
-
   var buttonClickMapPinsHandler = function (evt) {
 
     var mapElement = document.querySelector('.map');
-    // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    // console.log(mapPinElements);
-
 
     var cardElement = document.querySelector('.map__card');
     if (!cardElement) {
@@ -65,7 +57,8 @@ window.createBlock = (function () {
   var renderFragment = function (points) {
     var similarMapPinsElement = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < points.length; k++) {
+    var pointsLength = (points.length <= 5) ? points.length : 5;
+    for (var k = 0; k < pointsLength; k++) {
       var element = points[k];
       var pin = renderMapPoint(element);
       fragment.appendChild(pin);
@@ -76,41 +69,140 @@ window.createBlock = (function () {
     similarMapPinsElement.appendChild(fragment);
   };
 
+  var checkPrice = function (value, selectPrice) {
+    switch (selectPrice) {
+      case 'middle':
+        return value > 10000 && value < 50000;
+      case 'low':
+        return value < 10000;
+      case 'high':
+        return value > 50000;
+      default:
+        return true;
+    }
+  };
+  var checkType = function (value, selectType) {
+    return value === selectType || selectType === 'any';
+  };
+  var checkRoom = function (value, selectRoom) {
+    return parseInt(value, 10) === parseInt(selectRoom, 10) || selectRoom === 'any';
+
+  };
+  var checkGuest = function (value, selectGuest) {
+    return parseInt(value, 10) === parseInt(selectGuest, 10) || selectGuest === 'any';
+  };
+
+  var checkCheckBoxWifi = function (value, checkBoxWifi) {
+    if (checkBoxWifi) {
+      return value.indexOf(checkBoxWifi) > -1;
+    } else {
+      return true;
+    }
+  };
+
+  var checkCheckBoxDishwasher = function (value, checkBoxDishwasher) {
+    if (checkBoxDishwasher) {
+      return value.indexOf(checkBoxDishwasher) > -1;
+    } else {
+      return true;
+    }
+  };
+
+  var checkCheckBoxParking = function (value, checkBoxParking) {
+    if (checkBoxParking) {
+      return value.indexOf(checkBoxParking) > -1;
+    } else {
+      return true;
+    }
+  };
+
+  var checkCheckBoxWasher = function (value, checkBoxWasher) {
+    if (checkBoxWasher) {
+      return value.indexOf(checkBoxWasher) > -1;
+    } else {
+      return true;
+    }
+  };
+
+  var checkCheckBoxElevator = function (value, checkBoxElevator) {
+    if (checkBoxElevator) {
+      return value.indexOf(checkBoxElevator) > -1;
+    } else {
+      return true;
+    }
+  };
+
+  var checkCheckBoxConditioner = function (value, checkBoxConditioner) {
+    if (checkBoxConditioner) {
+      return value.indexOf(checkBoxConditioner) > -1;
+    } else {
+      return true;
+    }
+  };
 
   // Фильтрация
   var filterPins = function (filters) {
     var filteredPins = [];
     if (filters) {
       filteredPins = dataArrPins.filter(function (pin) {
-        // var tipeElement = filterBlock.querySelector('#housing-type');
-        // console.log(pin.offer.type);
 
-        return pin.offer.type === filters.typeHouse;
-        // return pin;
+        return checkType(pin.offer.type, filters['housing-type']) &&
+          checkPrice(pin.offer.price, filters['housing-price']) &&
+          checkRoom(pin.offer.rooms, filters['housing-rooms']) &&
+          checkGuest(pin.offer.guests, filters['housing-guests']) &&
+          checkCheckBoxWifi(pin.offer.features, filters['wifi']) &&
+          checkCheckBoxDishwasher(pin.offer.features, filters['dishwasher']) &&
+          checkCheckBoxParking(pin.offer.features, filters['parking']) &&
+          checkCheckBoxWasher(pin.offer.features, filters['washer']) &&
+          checkCheckBoxElevator(pin.offer.features, filters['elevator']) &&
+          checkCheckBoxConditioner(pin.offer.features, filters['conditioner']);
       });
-      // console.log(filteredPins);
-
     } else {
       filteredPins = dataArrPins;
     }
     return filteredPins;
   };
 
+  var generateSelectFilters = function (filters) {
+    var selectElements = filterBlock.querySelectorAll('.map__filter');
+    selectElements.forEach(function (selectElement) {
+      var selectElementName = selectElement.getAttribute('name');
+      filters[selectElementName] = selectElement.options[selectElement.selectedIndex].value;
+    });
+    return filters;
+  };
+
+  var generateCheckBoxFilters = function (filters) {
+    var checkboxElements = filterBlock.querySelectorAll('.map__checkbox');
+    checkboxElements.forEach(function (checkBoxElement) {
+      var checkBoxElementValue = checkBoxElement.value;
+      if (checkBoxElement.checked) {
+        filters[checkBoxElementValue] = checkBoxElement.value;
+      }
+    });
+    return filters;
+  };
+
   // Функции обработчики на селектах
-  // var typeValue = '';
-  var onSelectChangeType = function () {
-    var typeValue = tipeElement.options[tipeElement.selectedIndex].value;
-    // console.log(typeValue);
-    var filters = {
-      typeHouse: typeValue,
-    };
-    renderFragment(filterPins(filters));
+  var onFilterChange = function () {
+    var filters = {};
+    filters = generateSelectFilters(filters);
+    filters = generateCheckBoxFilters(filters);
+    // console.log(filters);
+    window.debounce(renderFragment(filterPins(filters)));
   };
 
   // События на селектах
   var filterBlock = document.querySelector('.map__filters-container');
-  var tipeElement = filterBlock.querySelector('#housing-type');
-  tipeElement.addEventListener('change', onSelectChangeType);
+
+  var selectElements = filterBlock.querySelectorAll('.map__filter');
+  selectElements.forEach(function (selectElement) {
+    selectElement.addEventListener('change', onFilterChange);
+  });
+  var checkboxElements = filterBlock.querySelectorAll('.map__checkbox');
+  checkboxElements.forEach(function (checkboxElement) {
+    checkboxElement.addEventListener('change', onFilterChange);
+  });
 
 
   // Получение массива данных
@@ -133,45 +225,4 @@ window.createBlock = (function () {
       document.body.insertAdjacentElement('afterbegin', nodeErr);
     },
   };
-  // var onSuccess = function (points) {
-  //   dataArrPins = points;
-  //   console.log(dataArrPins);
-  //   renderFragment(filterPins());
-  //   // updateMapPins();
-  // };
-  // var onError = function (errorMessage) {
-  //   var nodeErr = document.createElement('div');
-  //   nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-  //   nodeErr.style.position = 'absolute';
-  //   nodeErr.style.left = 0;
-  //   nodeErr.style.right = 0;
-  //   nodeErr.style.fontSize = '30px';
-
-  //   nodeErr.textContent = errorMessage;
-  //   document.body.insertAdjacentElement('afterbegin', nodeErr);
-  // };
-
-  // window.ajax.load(onSuccess, onError);
 })();
-
-// return {
-//   onSuccess: function (points) {
-//     var fragment = document.createDocumentFragment();
-//     for (var k = 0; k < points.length; k++) {
-//       var element = points[k];
-//       fragment.appendChild(renderMapPoint(element));
-//     }
-//     similarMapPinsElement.appendChild(fragment);
-//   },
-//   onError: function (errorMessage) {
-//     var nodeErr = document.createElement('div');
-//     nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-//     nodeErr.style.position = 'absolute';
-//     nodeErr.style.left = 0;
-//     nodeErr.style.right = 0;
-//     nodeErr.style.fontSize = '30px';
-
-//     nodeErr.textContent = errorMessage;
-//     document.body.insertAdjacentElement('afterbegin', nodeErr);
-//   }
-// };

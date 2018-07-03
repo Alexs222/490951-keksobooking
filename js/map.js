@@ -48,7 +48,6 @@ var buttonActivationMouseupHandler = function () {
     disabledElementFormArr[j].removeAttribute('disabled');
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-  // window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError); // Инициализируем метки
   // var removeHiddenClass = function (elements) {
   //   for (var k = 0; k < elements.length; k++) {
   //     elements[k].classList.remove('hidden');
