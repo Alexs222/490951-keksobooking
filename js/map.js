@@ -23,22 +23,30 @@ var formAd = document.querySelector('.ad-form');
 var inputAddress = document.querySelector('#address');
 
 // Событие отправки формы на сервер
+var deaktivate = function () {
+  var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  for (var k = 0; k < mapPinElements.length; k++) {
+    mapPinElements[k].remove();
+  }
+  buttonActivation.style.left = coordMapPin.x;
+  buttonActivation.style.top = coordMapPin.y;
+
+  mapElement.classList.add('map--faded');
+  formAd.classList.add('ad-form--disabled');
+  for (var j = 0; j < disabledElementFormArr.length; j++) {
+    disabledElementFormArr[j].setAttribute('disabled', 'disabled');
+  }
+  buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+  formAd.reset();
+};
+
 formAd.addEventListener('submit', function (evt) {
-  window.ajax.upload(new FormData(formAd), function () {
-    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)'); // уже было в файле create-block.js
-    for (var k = 0; k < mapPinElements.length; k++) {
-      mapPinElements[k].remove();
-    }
-    mapElement.classList.add('map--faded');
-    formAd.classList.add('ad-form--disabled');
-    for (var j = 0; j < disabledElementFormArr.length; j++) {
-      disabledElementFormArr[j].setAttribute('disabled', 'disabled');
-    }
-    buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
-    formAd.reset();
-  });
+  window.ajax.upload(new FormData(formAd), deaktivate);
   evt.preventDefault();
 });
+
+// Сброс формы
+formAd.addEventListener('reset', deaktivate);
 
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {

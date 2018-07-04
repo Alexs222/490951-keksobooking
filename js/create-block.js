@@ -39,7 +39,6 @@ window.createBlock = (function () {
     var pointElement = similarMapPinTemplate.cloneNode(true);
     pointElement.style.left = point.location.x - window.commonConst.POINT_WIDTH / 2 + 'px'; // Учитываем ширину метки
     pointElement.style.top = point.location.y - window.commonConst.POINT_HEIGHT + 'px'; // Учитываем высоту метки
-    // pointElement.classList.add('hidden');
 
     pointElement.addEventListener('click', buttonClickMapPinsHandler);
     pointElement.addEventListener('keydown', function (evt) {
@@ -184,13 +183,17 @@ window.createBlock = (function () {
   };
 
   // Функции обработчики на селектах
-  var onFilterChange = function () {
+  var onFilterChange = window.debounce(function () {
     var filters = {};
+    var cardElement = document.querySelector('.map__card');
+    if (cardElement) {
+      cardElement.remove();
+    }
     filters = generateSelectFilters(filters);
     filters = generateCheckBoxFilters(filters);
     // console.log(filters);
-    window.debounce(renderFragment(filterPins(filters)));
-  };
+    renderFragment(filterPins(filters));
+  });
 
   // События на селектах
   var filterBlock = document.querySelector('.map__filters-container');
