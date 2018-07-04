@@ -91,49 +91,9 @@ window.createBlock = (function () {
     return parseInt(value, 10) === parseInt(selectGuest, 10) || selectGuest === 'any';
   };
 
-  var checkCheckBoxWifi = function (value, checkBoxWifi) {
+  var checkCheckBox = function (value, checkBoxWifi) {
     if (checkBoxWifi) {
       return value.indexOf(checkBoxWifi) > -1;
-    } else {
-      return true;
-    }
-  };
-
-  var checkCheckBoxDishwasher = function (value, checkBoxDishwasher) {
-    if (checkBoxDishwasher) {
-      return value.indexOf(checkBoxDishwasher) > -1;
-    } else {
-      return true;
-    }
-  };
-
-  var checkCheckBoxParking = function (value, checkBoxParking) {
-    if (checkBoxParking) {
-      return value.indexOf(checkBoxParking) > -1;
-    } else {
-      return true;
-    }
-  };
-
-  var checkCheckBoxWasher = function (value, checkBoxWasher) {
-    if (checkBoxWasher) {
-      return value.indexOf(checkBoxWasher) > -1;
-    } else {
-      return true;
-    }
-  };
-
-  var checkCheckBoxElevator = function (value, checkBoxElevator) {
-    if (checkBoxElevator) {
-      return value.indexOf(checkBoxElevator) > -1;
-    } else {
-      return true;
-    }
-  };
-
-  var checkCheckBoxConditioner = function (value, checkBoxConditioner) {
-    if (checkBoxConditioner) {
-      return value.indexOf(checkBoxConditioner) > -1;
     } else {
       return true;
     }
@@ -149,12 +109,12 @@ window.createBlock = (function () {
           checkPrice(pin.offer.price, filters['housing-price']) &&
           checkRoom(pin.offer.rooms, filters['housing-rooms']) &&
           checkGuest(pin.offer.guests, filters['housing-guests']) &&
-          checkCheckBoxWifi(pin.offer.features, filters['wifi']) &&
-          checkCheckBoxDishwasher(pin.offer.features, filters['dishwasher']) &&
-          checkCheckBoxParking(pin.offer.features, filters['parking']) &&
-          checkCheckBoxWasher(pin.offer.features, filters['washer']) &&
-          checkCheckBoxElevator(pin.offer.features, filters['elevator']) &&
-          checkCheckBoxConditioner(pin.offer.features, filters['conditioner']);
+          checkCheckBox(pin.offer.features, filters['wifi']) &&
+          checkCheckBox(pin.offer.features, filters['dishwasher']) &&
+          checkCheckBox(pin.offer.features, filters['parking']) &&
+          checkCheckBox(pin.offer.features, filters['washer']) &&
+          checkCheckBox(pin.offer.features, filters['elevator']) &&
+          checkCheckBox(pin.offer.features, filters['conditioner']);
       });
     } else {
       filteredPins = dataArrPins;
