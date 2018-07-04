@@ -11,8 +11,9 @@
   image.style.height = 100 + '%';
   preview.appendChild(image);
 
-  fileChooserAvatar.addEventListener('change', function () {
-    var file = fileChooserAvatar.files[0];
+
+  var readFile = function (chooser, imgEl) {
+    var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -22,27 +23,22 @@
     if (matches) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
-        previewAvatar.src = reader.result;
+        imgEl.src = reader.result;
       });
       reader.readAsDataURL(file);
     }
-  });
+  };
 
-  fileChooser.addEventListener('change', function () {
-    var file = fileChooser.files[0];
-    var fileName = file.name.toLowerCase();
 
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      var reader = new FileReader();
-      reader.addEventListener('load', function () {
-        image.src = reader.result;
-      });
-      reader.readAsDataURL(file);
+  var onChangeInputFile = function (evt) {
+    if (evt.currentTarget.name === 'avatar') {
+      readFile(fileChooserAvatar, previewAvatar);
+    } else if (evt.currentTarget.name === 'images') {
+      readFile(fileChooser, image);
     }
-  });
+  };
+
+  fileChooserAvatar.addEventListener('change', onChangeInputFile);
+  fileChooser.addEventListener('change', onChangeInputFile);
 
 })();
