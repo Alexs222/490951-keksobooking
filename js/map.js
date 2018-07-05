@@ -23,8 +23,8 @@ var formAd = document.querySelector('.ad-form');
 var inputAddress = document.querySelector('#address');
 
 // Событие отправки формы на сервер
-var deaktivate = function () {
-  var difoultSrcImg = 'img/muffin-grey.svg';
+var deactivate = function () {
+  var defaultSrcImg = 'img/muffin-grey.svg';
   var cardBlock = document.querySelector('.map__card');
   if (cardBlock) {
     cardBlock.remove();
@@ -48,7 +48,7 @@ var deaktivate = function () {
   inputPrice.setAttribute('placeholder', defaultPlaceholder);
 
   var previewAvatar = document.querySelector('.ad-form-header__preview img');
-  previewAvatar.src = difoultSrcImg;
+  previewAvatar.src = defaultSrcImg;
 
   var preview = document.querySelector('.ad-form__photo');
   var images = document.querySelectorAll('.ad-form__photo-img');
@@ -59,14 +59,41 @@ var deaktivate = function () {
   formAd.reset();
 };
 
+var onSuccessUpload = function () {
+  deactivate();
+  var msg = document.querySelector('.success');
+  msg.classList.remove('hidden');
+  document.addEventListener('click', function () {
+    msg.classList.add('hidden');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 27) {
+      msg.classList.add('hidden');
+    }
+  });
+};
+
+var onErrorUpload = function (errorMessage) {
+  var nodeErr = document.createElement('div');
+  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+  nodeErr.style.position = 'absolute';
+  nodeErr.style.left = 0;
+  nodeErr.style.right = 0;
+  nodeErr.style.fontSize = '30px';
+
+  nodeErr.textContent = errorMessage;
+  document.body.insertAdjacentElement('afterbegin', nodeErr);
+  setTimeout(nodeErr.remove(), 5000);
+};
+
 formAd.addEventListener('submit', function (evt) {
-  window.ajax.upload(new FormData(formAd), deaktivate);
+  window.ajax.upload(new FormData(formAd), onSuccessUpload, onErrorUpload);
   evt.preventDefault();
 });
 
 // Сброс формы
 var resetForm = document.querySelector('.ad-form__reset');
-resetForm.addEventListener('click', deaktivate);
+resetForm.addEventListener('click', deactivate);
 
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {

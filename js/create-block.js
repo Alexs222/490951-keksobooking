@@ -179,6 +179,7 @@ window.createBlock = (function () {
 
       nodeErr.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', nodeErr);
+      setTimeout(nodeErr.remove(), 5000);
     },
   };
 })();
