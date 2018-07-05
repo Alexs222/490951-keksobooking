@@ -35,44 +35,24 @@
     guestsRoomsCard.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
 
     var timeInOutCard = cardElement.querySelector('.popup__text--time');
-    timeInOutCard.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkin;
+    timeInOutCard.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
     var featuresListCard = cardElement.querySelector('.popup__features');
-    var featureItemWiFi = featuresListCard.querySelector('.popup__feature--wifi');
-    var featureItemDishwasher = featuresListCard.querySelector('.popup__feature--dishwasher');
-    var featureItemParking = featuresListCard.querySelector('.popup__feature--parking');
-    var featureItemWasher = featuresListCard.querySelector('.popup__feature--washer');
-    var featureItemElevator = featuresListCard.querySelector('.popup__feature--elevator');
-    var featureItemConditioner = featuresListCard.querySelector('.popup__feature--conditioner');
-
+    var featuresItemCards = featuresListCard.querySelectorAll('.popup__feature');
+    var arrIncludEleFeatures = [];
     for (var j = 0; j < window.commonConst.FACILITIES.length; j++) {
       for (var i = 0; i < card.offer.features.length; i++) {
-        if (window.commonConst.FACILITIES[j] !== card.offer.features[i]) {
-          switch (card.offer.features[i]) {
-            case 'wifi':
-              featureItemWiFi.remove();
-              break;
-            case 'dishwasher':
-              featureItemDishwasher.remove();
-              break;
-            case 'parking':
-              featureItemParking.remove();
-              break;
-            case 'washer':
-              featureItemWasher.remove();
-              break;
-            case 'elevator':
-              featureItemElevator.remove();
-              break;
-            case 'conditioner':
-              featureItemConditioner.remove();
-              break;
-            default:
-              break;
-          }
+        if (window.commonConst.FACILITIES[j] === card.offer.features[i]) {
+          arrIncludEleFeatures.push(featuresItemCards[j]);
         }
       }
     }
+    featuresItemCards.forEach(function (featuresItemCard) {
+      featuresItemCard.remove();
+    });
+    arrIncludEleFeatures.forEach(function (arrIncludEleFeature) {
+      featuresListCard.appendChild(arrIncludEleFeature);
+    });
 
     var descriptionCard = cardElement.querySelector('.popup__description');
     descriptionCard.textContent = card.offer.description;
@@ -88,6 +68,17 @@
 
     var avatarCard = cardElement.querySelector('.popup__avatar');
     avatarCard.src = card.author.avatar;
+
+    // Закрываем карточку
+    var closeElement = cardElement.querySelector('.popup__close');
+    closeElement.addEventListener('click', function () {
+      cardElement.remove();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.keyCode === 27) {
+        cardElement.remove();
+      }
+    });
 
     return cardElement;
   };
