@@ -24,6 +24,11 @@ var inputAddress = document.querySelector('#address');
 
 // Событие отправки формы на сервер
 var deaktivate = function () {
+  var difoultSrcImg = 'img/muffin-grey.svg';
+  var cardBlock = document.querySelector('.map__card');
+  if (cardBlock) {
+    cardBlock.remove();
+  }
   var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   for (var k = 0; k < mapPinElements.length; k++) {
     mapPinElements[k].remove();
@@ -37,6 +42,20 @@ var deaktivate = function () {
     disabledElementFormArr[j].setAttribute('disabled', 'disabled');
   }
   buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+
+  var defaultPlaceholder = '1000';
+  var inputPrice = document.querySelector('#price');
+  inputPrice.setAttribute('placeholder', defaultPlaceholder);
+
+  var previewAvatar = document.querySelector('.ad-form-header__preview img');
+  previewAvatar.src = difoultSrcImg;
+
+  var preview = document.querySelector('.ad-form__photo');
+  var images = document.querySelectorAll('.ad-form__photo-img');
+  images.forEach(function (image) {
+    preview.removeChild(image);
+  });
+
   formAd.reset();
 };
 
@@ -46,7 +65,8 @@ formAd.addEventListener('submit', function (evt) {
 });
 
 // Сброс формы
-formAd.addEventListener('reset', deaktivate);
+var resetForm = document.querySelector('.ad-form__reset');
+resetForm.addEventListener('click', deaktivate);
 
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {
@@ -56,15 +76,7 @@ var buttonActivationMouseupHandler = function () {
     disabledElementFormArr[j].removeAttribute('disabled');
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-  // var removeHiddenClass = function (elements) {
-  //   for (var k = 0; k < elements.length; k++) {
-  //     elements[k].classList.remove('hidden');
-  //   }
-  // };
-  // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  // removeHiddenClass(mapPinElements);
   window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError);
-
   buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
 };
 
