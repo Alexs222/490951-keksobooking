@@ -7,7 +7,6 @@ window.createBlock = (function () {
     var left = evt.currentTarget.style.left;
     var top = evt.currentTarget.style.top;
 
-
     var mapFiltersContainerElement = document.querySelector('.map__filters-container');
     for (var j = 0; j < dataArrPins.length; j++) {
       var pinLeft = dataArrPins[j].location.x - window.commonConst.POINT_WIDTH / 2 + 'px';
@@ -20,14 +19,12 @@ window.createBlock = (function () {
   };
 
   var buttonClickMapPinsHandler = function (evt) {
-
     var mapElement = document.querySelector('.map');
-
-    var cardElement = document.querySelector('.map__card');
-    if (!cardElement) {
+    var cardBlock = document.querySelector('.map__card');
+    if (!cardBlock) {
       openCard(evt, mapElement);
     } else {
-      setTimeout(cardElement.remove(), 100);
+      setTimeout(cardBlock.remove(), 100);
       setTimeout(openCard(evt, mapElement), 100);
     }
   };
@@ -145,13 +142,12 @@ window.createBlock = (function () {
   // Функции обработчики на селектах
   var onFilterChange = window.debounce(function () {
     var filters = {};
-    var cardElement = document.querySelector('.map__card');
-    if (cardElement) {
-      cardElement.remove();
+    var cardBlock = document.querySelector('.map__card');
+    if (cardBlock) {
+      cardBlock.remove();
     }
     filters = generateSelectFilters(filters);
     filters = generateCheckBoxFilters(filters);
-    // console.log(filters);
     renderFragment(filterPins(filters));
   });
 
@@ -167,14 +163,11 @@ window.createBlock = (function () {
     checkboxElement.addEventListener('change', onFilterChange);
   });
 
-
   // Получение массива данных
   return {
     onSuccess: function (points) {
       dataArrPins = points;
-      // console.log(dataArrPins);
       renderFragment(filterPins());
-      // updateMapPins();
     },
     onError: function (errorMessage) {
       var nodeErr = document.createElement('div');
@@ -186,6 +179,7 @@ window.createBlock = (function () {
 
       nodeErr.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', nodeErr);
+      setTimeout(nodeErr.remove(), 5000);
     },
   };
 })();

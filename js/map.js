@@ -23,7 +23,12 @@ var formAd = document.querySelector('.ad-form');
 var inputAddress = document.querySelector('#address');
 
 // Событие отправки формы на сервер
-var deaktivate = function () {
+var deactivate = function () {
+  var defaultSrcImg = 'img/muffin-grey.svg';
+  var cardBlock = document.querySelector('.map__card');
+  if (cardBlock) {
+    cardBlock.remove();
+  }
   var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   for (var k = 0; k < mapPinElements.length; k++) {
     mapPinElements[k].remove();
@@ -37,16 +42,58 @@ var deaktivate = function () {
     disabledElementFormArr[j].setAttribute('disabled', 'disabled');
   }
   buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
+
+  var defaultPlaceholder = '1000';
+  var inputPrice = document.querySelector('#price');
+  inputPrice.setAttribute('placeholder', defaultPlaceholder);
+
+  var previewAvatar = document.querySelector('.ad-form-header__preview img');
+  previewAvatar.src = defaultSrcImg;
+
+  var preview = document.querySelector('.ad-form__photo');
+  var images = document.querySelectorAll('.ad-form__photo-img');
+  images.forEach(function (image) {
+    preview.removeChild(image);
+  });
+
   formAd.reset();
 };
 
+var onSuccessUpload = function () {
+  deactivate();
+  var msg = document.querySelector('.success');
+  msg.classList.remove('hidden');
+  document.addEventListener('click', function () {
+    msg.classList.add('hidden');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 27) {
+      msg.classList.add('hidden');
+    }
+  });
+};
+
+var onErrorUpload = function (errorMessage) {
+  var nodeErr = document.createElement('div');
+  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+  nodeErr.style.position = 'absolute';
+  nodeErr.style.left = 0;
+  nodeErr.style.right = 0;
+  nodeErr.style.fontSize = '30px';
+
+  nodeErr.textContent = errorMessage;
+  document.body.insertAdjacentElement('afterbegin', nodeErr);
+  setTimeout(nodeErr.remove(), 5000);
+};
+
 formAd.addEventListener('submit', function (evt) {
-  window.ajax.upload(new FormData(formAd), deaktivate);
+  window.ajax.upload(new FormData(formAd), onSuccessUpload, onErrorUpload);
   evt.preventDefault();
 });
 
 // Сброс формы
-formAd.addEventListener('reset', deaktivate);
+var resetForm = document.querySelector('.ad-form__reset');
+resetForm.addEventListener('click', deactivate);
 
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {
@@ -56,15 +103,7 @@ var buttonActivationMouseupHandler = function () {
     disabledElementFormArr[j].removeAttribute('disabled');
   }
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
-  // var removeHiddenClass = function (elements) {
-  //   for (var k = 0; k < elements.length; k++) {
-  //     elements[k].classList.remove('hidden');
-  //   }
-  // };
-  // var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  // removeHiddenClass(mapPinElements);
   window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError);
-
   buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
 };
 
