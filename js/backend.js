@@ -13,7 +13,13 @@ window.ajax = (function () {
         if (xhr.status === 200) {
           onLoad(xhr.response);
         } else {
-          onError('Статус ответа:' + xhr.status + ' ' + xhr.statusText);
+          var message = xhr.statusText;
+          if (xhr.status === 400) {
+            message = xhr.response.reduce(function (msg, item) {
+              return msg + item.fieldName + ' ' + item.errorMessage + ';';
+            }, '');
+          }
+          onError('Статус ответа: ' + xhr.status + ' ' + message);
         }
       });
       xhr.addEventListener('error', function () {
@@ -35,7 +41,13 @@ window.ajax = (function () {
           onLoad(xhr.response);
 
         } else {
-          onError('Статус ответа:' + xhr.status + ' ' + xhr.statusText);
+          var message = xhr.statusText;
+          if (xhr.status === 400) {
+            message = xhr.response.reduce(function (msg, item) {
+              return msg + item.fieldName + ' ' + item.errorMessage + ';';
+            }, '');
+          }
+          onError('Статус ответа: ' + xhr.status + ' ' + message);
         }
       });
       xhr.addEventListener('error', function () {

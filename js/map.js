@@ -109,11 +109,11 @@ var onSuccessUpload = function () {
 };
 
 var onErrorUpload = function (errorMessage) {
-  var DELAY_TIME = 5000;
+  var DELAY_TIME = 10000;
   var nodeErr = document.createElement('div');
   nodeErr.textContent = errorMessage;
-  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-  nodeErr.style.position = 'absolute';
+  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white; padding: 20px;';
+  nodeErr.style.position = 'fixed';
   nodeErr.style.left = 0;
   nodeErr.style.right = 0;
   nodeErr.style.fontSize = '30px';
