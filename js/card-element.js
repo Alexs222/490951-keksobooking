@@ -59,12 +59,14 @@
 
     var photosListCard = cardElement.querySelector('.popup__photos');
     var photoItemCard = cardElement.querySelector('.popup__photo');
+
     photoItemCard.remove();
-    for (var index = 0; index < card.offer.photos.length; index++) {
+
+    card.offer.photos.forEach(function (photo) {
       var element = photoItemCard.cloneNode(true);
-      element.src = card.offer.photos[index];
+      element.src = photo;
       photosListCard.appendChild(element);
-    }
+    });
 
     var avatarCard = cardElement.querySelector('.popup__avatar');
     avatarCard.src = card.author.avatar;
@@ -75,7 +77,7 @@
       cardElement.remove();
     });
     document.addEventListener('keydown', function (e) {
-      if (e.keyCode === 27) {
+      if (e.keyCode === window.commonConst.KEY_ESC) {
         cardElement.remove();
       }
     });

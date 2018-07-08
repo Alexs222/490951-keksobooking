@@ -5,6 +5,7 @@ window.ajax = (function () {
 
   return {
     load: function (onLoad, onError) {
+      var longTimeOut = 10000;
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -21,11 +22,12 @@ window.ajax = (function () {
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + ' мс');
       });
-      xhr.timeout = 10000;
+      xhr.timeout = longTimeOut;
       xhr.open('GET', URL_DATA);
       xhr.send();
     },
     upload: function (data, onLoad, onError) {
+      var longTimeOut = 10000;
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
@@ -42,7 +44,7 @@ window.ajax = (function () {
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + ' мс');
       });
-      xhr.timeout = 10000;
+      xhr.timeout = longTimeOut;
       xhr.open('POST', URL_OUT);
       xhr.send(data);
     }
