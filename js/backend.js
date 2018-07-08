@@ -5,6 +5,7 @@ window.ajax = (function () {
 
   return {
     load: function (onLoad, onError) {
+      var longTimeOut = 10000;
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -12,7 +13,13 @@ window.ajax = (function () {
         if (xhr.status === 200) {
           onLoad(xhr.response);
         } else {
-          onError('Статус ответа:' + xhr.status + ' ' + xhr.statusText);
+          var message = xhr.statusText;
+          if (xhr.status === 400) {
+            message = xhr.response.reduce(function (msg, item) {
+              return msg + item.fieldName + ' ' + item.errorMessage + ';';
+            }, '');
+          }
+          onError('Статус ответа: ' + xhr.status + ' ' + message);
         }
       });
       xhr.addEventListener('error', function () {
@@ -21,11 +28,12 @@ window.ajax = (function () {
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + ' мс');
       });
-      xhr.timeout = 10000;
+      xhr.timeout = longTimeOut;
       xhr.open('GET', URL_DATA);
       xhr.send();
     },
     upload: function (data, onLoad, onError) {
+      var longTimeOut = 10000;
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
@@ -33,7 +41,13 @@ window.ajax = (function () {
           onLoad(xhr.response);
 
         } else {
-          onError('Статус ответа:' + xhr.status + ' ' + xhr.statusText);
+          var message = xhr.statusText;
+          if (xhr.status === 400) {
+            message = xhr.response.reduce(function (msg, item) {
+              return msg + item.fieldName + ' ' + item.errorMessage + ';';
+            }, '');
+          }
+          onError('Статус ответа: ' + xhr.status + ' ' + message);
         }
       });
       xhr.addEventListener('error', function () {
@@ -42,7 +56,7 @@ window.ajax = (function () {
       xhr.addEventListener('timeout', function () {
         onError('Запрос не успел выполниться за ' + xhr.timeout + ' мс');
       });
-      xhr.timeout = 10000;
+      xhr.timeout = longTimeOut;
       xhr.open('POST', URL_OUT);
       xhr.send(data);
     }

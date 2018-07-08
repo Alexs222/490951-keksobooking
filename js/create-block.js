@@ -8,24 +8,24 @@ window.createBlock = (function () {
     var top = evt.currentTarget.style.top;
 
     var mapFiltersContainerElement = document.querySelector('.map__filters-container');
-    for (var j = 0; j < dataArrPins.length; j++) {
-      var pinLeft = dataArrPins[j].location.x - window.commonConst.POINT_WIDTH / 2 + 'px';
-      var pinTop = dataArrPins[j].location.y - window.commonConst.POINT_HEIGHT + 'px';
+    dataArrPins.forEach(function (dataArrPin) {
+      var pinLeft = dataArrPin.location.x - window.commonConst.POINT_WIDTH / 2 + 'px';
+      var pinTop = dataArrPin.location.y - window.commonConst.POINT_HEIGHT + 'px';
       if (pinLeft === left && pinTop === top) {
-        mapElement.insertBefore(window.renderMapCard(dataArrPins[j]), mapFiltersContainerElement);
-        break;
+        mapElement.insertBefore(window.renderMapCard(dataArrPin), mapFiltersContainerElement);
       }
-    }
+    });
   };
 
   var buttonClickMapPinsHandler = function (evt) {
+    var timeDelay = 100;
     var mapElement = document.querySelector('.map');
     var cardBlock = document.querySelector('.map__card');
     if (!cardBlock) {
       openCard(evt, mapElement);
     } else {
-      setTimeout(cardBlock.remove(), 100);
-      setTimeout(openCard(evt, mapElement), 100);
+      setTimeout(cardBlock.remove(), timeDelay);
+      setTimeout(openCard(evt, mapElement), timeDelay);
     }
   };
 
@@ -39,7 +39,7 @@ window.createBlock = (function () {
 
     pointElement.addEventListener('click', buttonClickMapPinsHandler);
     pointElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 13) {
+      if (evt.keyCode === window.commonConst.KEY_ENTER) {
         buttonClickMapPinsHandler(evt);
       }
     });
@@ -51,14 +51,18 @@ window.createBlock = (function () {
   };
 
   var renderFragment = function (points) {
+    var MAX_PINS = 5;
     var similarMapPinsElement = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
-    var pointsLength = (points.length <= 5) ? points.length : 5;
-    for (var k = 0; k < pointsLength; k++) {
-      var element = points[k];
-      var pin = renderMapPoint(element);
+    points.filter(function (_, i) {
+      return i < MAX_PINS;
+    })
+    .map(function (e) {
+      return renderMapPoint(e);
+    })
+    .forEach(function (pin) {
       fragment.appendChild(pin);
-    }
+    });
     Array.prototype.forEach.call(document.querySelectorAll('.map__pin:not(.map__pin--main)'), function (el) {
       el.remove();
     });
@@ -66,13 +70,15 @@ window.createBlock = (function () {
   };
 
   var checkPrice = function (value, selectPrice) {
+    var intervalLow = 10000;
+    var intervalHigh = 50000;
     switch (selectPrice) {
       case 'middle':
-        return value > 10000 && value < 50000;
+        return value > intervalLow && value < intervalHigh;
       case 'low':
-        return value < 10000;
+        return value < intervalLow;
       case 'high':
-        return value > 50000;
+        return value > intervalHigh;
       default:
         return true;
     }
@@ -91,9 +97,8 @@ window.createBlock = (function () {
   var checkCheckBox = function (value, checkBoxWifi) {
     if (checkBoxWifi) {
       return value.indexOf(checkBoxWifi) > -1;
-    } else {
-      return true;
     }
+    return true;
   };
 
   // Фильтрация
@@ -170,16 +175,19 @@ window.createBlock = (function () {
       renderFragment(filterPins());
     },
     onError: function (errorMessage) {
+      var DELAY_TIME = 10000;
       var nodeErr = document.createElement('div');
-      nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-      nodeErr.style.position = 'absolute';
+      nodeErr.textContent = errorMessage;
+      nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white; padding: 20px;';
+      nodeErr.style.position = 'fixed';
       nodeErr.style.left = 0;
       nodeErr.style.right = 0;
       nodeErr.style.fontSize = '30px';
-
       nodeErr.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', nodeErr);
-      setTimeout(nodeErr.remove(), 5000);
-    },
+      setTimeout(function () {
+        nodeErr.remove();
+      }, DELAY_TIME);
+    }
   };
 })();

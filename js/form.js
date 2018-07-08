@@ -25,7 +25,7 @@
   // Цена за ночь
   var selectTypeHouse = notice.querySelector('#type');
   var priceHouse = notice.querySelector('#price');
-  var selectChangeTypeHendler = function () {
+  var selectChangeTypeHandler = function () {
     switch (selectTypeHouse.value) {
       case 'bungalo':
         priceHouse.placeholder = priceMinBungalo + '';
@@ -33,7 +33,7 @@
         break;
       case 'flat':
         priceHouse.placeholder = priceMinFlat + '';
-        priceHouse.min = priceMinFlat;
+        priceHouse.setAttribute('min', priceMinFlat);
         break;
       case 'house':
         priceHouse.placeholder = priceMinHouse + '';
@@ -47,13 +47,13 @@
         break;
     }
   };
-  selectTypeHouse.addEventListener('change', selectChangeTypeHendler);
+  selectTypeHouse.addEventListener('change', selectChangeTypeHandler);
 
   // Время заезда и выезда
   var timeInSelected = notice.querySelector('#timein');
   var timeOutSelected = notice.querySelector('#timeout');
 
-  var selectChangeTimeInOutHendler = function (evt) {
+  var selectChangeTimeInOutHandler = function (evt) {
     if (evt.target === timeInSelected) {
       timeOutSelected.selectedIndex = evt.target.selectedIndex;
     } else {
@@ -61,18 +61,19 @@
     }
   };
 
-  timeInSelected.addEventListener('change', selectChangeTimeInOutHendler);
-  timeOutSelected.addEventListener('change', selectChangeTimeInOutHendler);
+  timeInSelected.addEventListener('change', selectChangeTimeInOutHandler);
+  timeOutSelected.addEventListener('change', selectChangeTimeInOutHandler);
 
   // Количество комнат
   var roomNumberSelect = notice.querySelector('#room_number');
   var capacitySelect = notice.querySelector('#capacity');
 
-  var selectChangeRoomAndCaoacityHendler = function (evt) {
+  var selectChangeRoomAndCapacityHandler = function (evt) {
     var deleteAttrDisabled = function () {
-      for (var j = 0; j < capacitySelect.options.length; j++) {
-        capacitySelect.options[j].removeAttribute('disabled');
-      }
+      var capacitySelectOptions = notice.querySelectorAll('#capacity option');
+      capacitySelectOptions.forEach(function (option) {
+        option.removeAttribute('disabled');
+      });
     };
 
     if (evt.target.selectedIndex === 3) {
@@ -99,6 +100,6 @@
     }
   };
 
-  roomNumberSelect.addEventListener('change', selectChangeRoomAndCaoacityHendler);
+  roomNumberSelect.addEventListener('change', selectChangeRoomAndCapacityHandler);
 
 })();

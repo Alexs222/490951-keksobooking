@@ -2,14 +2,49 @@
 
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
-
 var mapElement = document.querySelector('.map');
+
+var disabledFieldset = function () {
+  disabledElementFormArr.forEach(function (disabledElementForm) {
+    disabledElementForm.setAttribute('disabled', 'disabled');
+  });
+};
+
+
+var clearForm = function (valStyle) {
+  var DEFAULT_COLOR_SUBMIT_BUTTON = '#ffaa99';
+  var DEFAULT_COLOR_LABAL_TEXT = '#999999';
+  var inputsForm = formAd.querySelectorAll('input, select, textarea');
+  var labelsForm = formAd.querySelectorAll('label');
+  var buttonSubmit = formAd.querySelector('.ad-form__submit');
+  var labelAvatar = formAd.querySelector('.ad-form-header__drop-zone');
+  var labelPhoto = formAd.querySelector('.ad-form__drop-zone');
+
+  if (valStyle === 'none') {
+    buttonSubmit.style.borderColor = DEFAULT_COLOR_SUBMIT_BUTTON;
+    labelAvatar.style.color = DEFAULT_COLOR_LABAL_TEXT;
+    labelPhoto.style.color = DEFAULT_COLOR_LABAL_TEXT;
+  } else {
+    buttonSubmit.style.borderColor = '';
+    labelAvatar.style.color = '';
+    labelPhoto.style.color = '';
+  }
+  inputsForm.forEach(function (inputForm) {
+    inputForm.style.border = valStyle;
+  });
+  labelsForm.forEach(function (labelForm) {
+    labelForm.style.boxShadow = valStyle;
+  });
+};
 
 // Делаем поля не активными
 var fieldsetElements = document.querySelectorAll('fieldset');
 var disabledElementFormArr = Array.from(fieldsetElements);
-for (var i = 0; i < disabledElementFormArr.length; i++) {
-  disabledElementFormArr[i].setAttribute('disabled', 'disabled');
+disabledFieldset();
+
+var formAd = document.querySelector('.ad-form');
+if (formAd.classList.contains('ad-form--disabled')) {
+  clearForm('none');
 }
 
 // Активация страницы
@@ -19,28 +54,27 @@ var coordMapPin = {
   'x': buttonActivation.style.left,
   'y': buttonActivation.style.top
 };
-var formAd = document.querySelector('.ad-form');
 var inputAddress = document.querySelector('#address');
 
 // Событие отправки формы на сервер
 var deactivate = function () {
+  clearForm('none');
+
   var defaultSrcImg = 'img/muffin-grey.svg';
   var cardBlock = document.querySelector('.map__card');
   if (cardBlock) {
     cardBlock.remove();
   }
   var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  for (var k = 0; k < mapPinElements.length; k++) {
-    mapPinElements[k].remove();
-  }
+  mapPinElements.forEach(function (mapPinElement) {
+    mapPinElement.remove();
+  });
   buttonActivation.style.left = coordMapPin.x;
   buttonActivation.style.top = coordMapPin.y;
 
   mapElement.classList.add('map--faded');
   formAd.classList.add('ad-form--disabled');
-  for (var j = 0; j < disabledElementFormArr.length; j++) {
-    disabledElementFormArr[j].setAttribute('disabled', 'disabled');
-  }
+  disabledFieldset();
   buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
 
   var defaultPlaceholder = '1000';
@@ -56,6 +90,7 @@ var deactivate = function () {
     preview.removeChild(image);
   });
 
+
   formAd.reset();
 };
 
@@ -67,23 +102,26 @@ var onSuccessUpload = function () {
     msg.classList.add('hidden');
   });
   document.addEventListener('keydown', function (e) {
-    if (e.keyCode === 27) {
+    if (e.keyCode === window.commonConst.KEY_ESC) {
       msg.classList.add('hidden');
     }
   });
 };
 
 var onErrorUpload = function (errorMessage) {
+  var DELAY_TIME = 10000;
   var nodeErr = document.createElement('div');
-  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-  nodeErr.style.position = 'absolute';
+  nodeErr.textContent = errorMessage;
+  nodeErr.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white; padding: 20px;';
+  nodeErr.style.position = 'fixed';
   nodeErr.style.left = 0;
   nodeErr.style.right = 0;
   nodeErr.style.fontSize = '30px';
-
   nodeErr.textContent = errorMessage;
   document.body.insertAdjacentElement('afterbegin', nodeErr);
-  setTimeout(nodeErr.remove(), 5000);
+  setTimeout(function () {
+    nodeErr.remove();
+  }, DELAY_TIME);
 };
 
 formAd.addEventListener('submit', function (evt) {
@@ -97,14 +135,19 @@ resetForm.addEventListener('click', deactivate);
 
 // Функция обработчик события mouseup на элементе map__pin--main
 var buttonActivationMouseupHandler = function () {
+
+
   mapElement.classList.remove('map--faded');
   formAd.classList.remove('ad-form--disabled');
-  for (var j = 0; j < disabledElementFormArr.length; j++) {
-    disabledElementFormArr[j].removeAttribute('disabled');
-  }
+  disabledElementFormArr.forEach(function (disabledElementForm) {
+    disabledElementForm.removeAttribute('disabled');
+  });
   inputAddress.value = (parseInt(coordMapPin.x, 10) - MAP_PIN_WIDTH / 2) + ', ' + (parseInt(coordMapPin.y, 10) - MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
   window.ajax.load(window.createBlock.onSuccess, window.createBlock.onError);
   buttonActivation.removeEventListener('mouseup', buttonActivationMouseupHandler); // Удаляем обработчик события с главной метки
+
+  clearForm('');
+
 };
 
 buttonActivation.addEventListener('mouseup', buttonActivationMouseupHandler);
@@ -129,6 +172,8 @@ buttonActivation.addEventListener('mousedown', function (evt) {
   var dragged = false;
 
   var onMouseMove = function (moveEvt) {
+    var MIN_HEIGHT = 130;
+    var MAX_HEIGHT = 630;
     moveEvt.preventDefault();
     dragged = true;
 
@@ -144,10 +189,10 @@ buttonActivation.addEventListener('mousedown', function (evt) {
 
     inputAddress.value = (buttonActivation.offsetLeft - shift.x + MAP_PIN_WIDTH / 2) + ', ' + (buttonActivation.offsetTop - shift.y + MAP_PIN_HEIGHT); // Учитываем ширину метки 62 / 2 и высоту метки 62 + 22
 
-    if (buttonActivation.offsetTop - shift.y < 130) {
-      buttonActivation.style.top = 130;
-    } else if (buttonActivation.offsetTop - shift.y > 630) {
-      buttonActivation.style.top = 630;
+    if (buttonActivation.offsetTop - shift.y < MIN_HEIGHT) {
+      buttonActivation.style.top = MIN_HEIGHT;
+    } else if (buttonActivation.offsetTop - shift.y > MAX_HEIGHT) {
+      buttonActivation.style.top = MAX_HEIGHT;
     } else {
       buttonActivation.style.top = (buttonActivation.offsetTop - shift.y) + 'px';
     }
