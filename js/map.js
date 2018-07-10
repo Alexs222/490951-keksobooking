@@ -90,6 +90,8 @@ var deactivate = function () {
     preview.removeChild(image);
   });
 
+  var formFilters = document.querySelector('.map__filters');
+  formFilters.reset();
 
   formAd.reset();
 };
